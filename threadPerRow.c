@@ -6,7 +6,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
-#define MAX_SIZE 10
+#define MAX_SIZE 20
 
 int matrix1[MAX_SIZE][MAX_SIZE];
 int matrix2[MAX_SIZE][MAX_SIZE];
