@@ -6,7 +6,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
-#define MAX_SIZE 10
+#define MAX_SIZE 20
 
 int matrix1[MAX_SIZE][MAX_SIZE];
 int matrix2[MAX_SIZE][MAX_SIZE];
@@ -67,9 +67,9 @@ void getMatrixElements(int matrix[][10], int row, int column) {
 }
 
 // function to multiply two matrices
-void multiplyMatrices(int first[][10],
-                      int second[][10],
-                      int result[][10],
+void multiplyMatrices(int first[][MAX_SIZE],
+                      int second[][MAX_SIZE],
+                      int result[][MAX_SIZE],
                       int r1, int c1, int r2, int c2) {
 
    // Initializing elements of matrix mult to 0.
@@ -88,7 +88,7 @@ void multiplyMatrices(int first[][10],
       }
    }
 }
-void display(int result[][10], int row, int column) {
+void display(int result[][MAX_SIZE], int row, int column) {
 
    printf("\nOutput Matrix:\n");
    for (int i = 0; i < row; ++i) {
