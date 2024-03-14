@@ -27,6 +27,7 @@ void readMatrixFromFile(const char *filename, int matrix[][MAX_SIZE], int *r, in
         close(fd);
         return;
     }
+
    int temp_buff[400]; 
    int i=0;
    char *token = strtok(buffer," \n");
@@ -85,27 +86,69 @@ void display(int matrix[][MAX_SIZE], int row, int column) {
     }
 }
 
+
+void write_matrix_to_file(int matrix[][MAX_SIZE], int r,int c,const char *filename) {
+    int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd < 0) {
+        perror("Error opening file");
+        return;
+    }
+
+    char buffer[256]; // Assuming each number is less than 256 characters
+
+    // Write the dimensions of the matrix
+    int dim_len = snprintf(buffer, sizeof(buffer), "%d %d\n", r, c);
+    if (write(fd, buffer, dim_len) != dim_len) {
+        perror("Error writing to file");
+        close(fd);
+        return;
+    }
+
+    // Write the matrix values
+    for (int i = 0; i < r; i++) {
+        for (int j = 0; j < c; j++) {
+            int num_len = snprintf(buffer, sizeof(buffer), "%d ", matrix[i][j]);
+            if (write(fd, buffer, num_len) != num_len) {
+                perror("Error writing to file");
+                close(fd);
+                return;
+            }
+        }
+        if (write(fd, "\n", 1) != 1) {
+            perror("Error writing to file");
+            close(fd);
+            return;
+        }
+    }
+
+    close(fd);
+}
+
 int main(int argc, char *argv[]) {
+
     pthread_t threads[MAX_SIZE];
     int row_args[MAX_SIZE];
 
-   char *File[2];
+   char *File[3];
    int fileNum=0;
    if(argc > 1)
    {
 
          File[0]=argv[1];
          File[1]=argv[2];
-         printf("%s\n",File[0]);
-         printf("%s\n",File[1]);
+         File[2]=argv[3];
+
          readMatrixFromFile(File[0],matrix1,&r1,&c1);
 
          readMatrixFromFile(File[1],matrix2,&r2,&c2);
+         if(argc <= 3)File[2]="out_threadPerRow.txt";
    }
-   else{
+   else {
       readMatrixFromFile("a.txt",matrix1,&r1,&c1);
 
       readMatrixFromFile("b.txt",matrix2,&r2,&c2);
+      
+
    }
 
     if (c1 != r2) {
@@ -124,7 +167,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < r1; ++i) {
         pthread_join(threads[i], NULL);
     }
-
+    write_matrix_to_file(result,r1,c2,File[2]);
     display(result, r1, c2);
 
     gettimeofday(&stop,NULL);
